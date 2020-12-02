@@ -3,7 +3,6 @@ import re
 
 file = os.path.join(os.path.dirname(__file__), 'input.txt')
 pattern = r'^(\d+)-(\d+) (\w): (.*)$'
-valid = 0
 
 with open(file) as f:
   lines = f.readlines()

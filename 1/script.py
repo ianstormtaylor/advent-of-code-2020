@@ -1,10 +1,7 @@
 import os
 
 file = os.path.join(os.path.dirname(__file__), "input.txt")
-
-with open(file) as f:
-    lines = f.readlines()
-    numbers = list(map(int, lines))
+numbers = [int(l) for l in open(file).readlines()]
 
 
 def part_one():

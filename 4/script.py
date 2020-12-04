@@ -1,7 +1,7 @@
 import os
 import re
 
-file = os.path.join(os.path.dirname(__file__), "input.txt")
+path = os.path.join(os.path.dirname(__file__), "input.txt")
 passports = []
 fields = {
     'byr': lambda x: re.match(r'^\d{4}$', x) and '1920' <= x and x <= '2002',
@@ -13,23 +13,18 @@ fields = {
     'pid': lambda x: re.match(r'^\d{9}$', x),
 }
 
-with open(file) as f:
-    lines = f.readlines()
-    passport = {}
-
+with open(path) as file:
+    groups = file.read().strip().split('\n\n')
+    lines = [g.replace('\n', ' ') for g in groups]
     for line in lines:
-        if line.strip() == '':
-            passports.append(passport)
-            passport = {}
-        else:
-            pairs = re.findall(r"\w{3}:[^ ]+", line)
-            for pair in pairs:
-                search = re.search(r"(\w{3}):(.*)", pair)
-                key = search.group(1)
-                value = search.group(2)
-                passport[key] = value
-    
-    passports.append(passport)
+        passport = {}
+        pairs = re.findall(r"\w{3}:[^ ]+", line)
+        for pair in pairs:
+            search = re.search(r"(\w{3}):(.*)", pair)
+            key = search.group(1)
+            value = search.group(2)
+            passport[key] = value
+        passports.append(passport)
 
 def check(passport, validation = False):
     for f in fields:
@@ -40,10 +35,12 @@ def check(passport, validation = False):
     return True
 
 def part_one():
-    return len(list(filter(lambda p: check(p), passports)))
+    valids = [p for p in passports if check(p)]
+    return len(valids)
 
 def part_two():
-    return len(list(filter(lambda p: check(p, True), passports)))
+    valids = [p for p in passports if check(p, True)]
+    return len(valids)
 
 print("Part one:", part_one())
 print("Part two:", part_two())

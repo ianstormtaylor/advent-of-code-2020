@@ -17,7 +17,9 @@ fields = {
     "byr": lambda x: re.match(r"^\d{4}$", x) and "1920" <= x and x <= "2002",
     "iyr": lambda x: re.match(r"^\d{4}$", x) and "2010" <= x and x <= "2020",
     "eyr": lambda x: re.match(r"^\d{4}$", x) and "2020" <= x and x <= "2030",
-    "hgt": lambda x: re.match(r"^(15[0-9]|1[6-8][0-9]|19[0-3])cm|(59|6[0-9]|7[0-6])in$", x),
+    "hgt": lambda x: re.match(
+        r"^(15[0-9]|1[6-8][0-9]|19[0-3])cm|(59|6[0-9]|7[0-6])in$", x
+    ),
     "hcl": lambda x: re.match(r"^#[0-9a-f]{6}$", x),
     "ecl": lambda x: re.match(r"^amb|blu|brn|gry|grn|hzl|oth$", x),
     "pid": lambda x: re.match(r"^\d{9}$", x),

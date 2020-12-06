@@ -1,5 +1,4 @@
 import os
-import re 
 
 file = os.path.join(os.path.dirname(__file__), "input.txt")
 lines = open(file).readlines()

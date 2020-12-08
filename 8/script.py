@@ -41,21 +41,17 @@ def is_terminating(list):
 
 
 def part_one():
-    result = run(instructions)
-    return result
+    return run(instructions)
 
 
 def part_two():
     for (i, (type, count)) in enumerate(instructions):
         if type != 'acc':
             new_type = 'jmp' if type == 'nop' else 'nop'
-            new_tuple = (new_type, count)
             new_instructions = instructions.copy()
-            new_instructions[i] = new_tuple
-            terminates = is_terminating(new_instructions)
-            if terminates:
-                result = run(new_instructions)
-                return result
+            new_instructions[i] = (new_type, count)
+            if is_terminating(new_instructions):
+                return run(new_instructions)
 
 
 print("Part one:", part_one())

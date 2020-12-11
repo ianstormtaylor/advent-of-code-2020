@@ -2,55 +2,77 @@ import os
 
 file = os.path.join(os.path.dirname(__file__), "input.txt")
 lines = open(file).read().strip().split("\n")
-start = [[l for l in line] for line in lines]
+matrix = [[l for l in line] for line in lines]
+hash = {}
+points = []
+directions = []
+
+for y, row in enumerate(matrix):
+    for x, cell in enumerate(row):
+        hash[(x, y)] = cell
+
+for x in range(0, len(matrix[0])):
+    for y in range(0, len(matrix)):
+        points.append((x, y))
+
+for x in range(-1, 2):
+    for y in range(-1, 2):
+        if x != 0 or y != 0:
+            directions.append((x, y))
 
 
-def get_adjacents(input, x, y):
-    x1 = max(x - 1, 0)
-    x2 = min(x + 1, len(input[0]) - 1)
-    y1 = max(y - 1, 0)
-    y2 = min(y + 1, len(input) - 1)
-    adjacents = []
-    for xx in range(x1, x2 + 1):
-        for yy in range(y1, y2 + 1):
-            if xx == x and yy == y:
-                continue
-            adjacents.append(input[yy][xx])
-    return adjacents
+def is_occupied(seats, point, direction, infinite = False):
+    if seats.get(point) == '.':
+        return None
+    x, y = point
+    xx, yy = direction
+    target = (x + xx, y + yy)
+    target_seat = seats.get(target)
+    while infinite and target_seat == '.':
+        target = (target[0] + xx, target[1] + yy)
+        target_seat = seats.get(target)
+        if target_seat is None:
+            return False
+    return target_seat == '#'
 
 
-def transform(input):
-    changes = 0
-    next = [[cell for cell in row] for row in input]
-    for y, row in enumerate(input):
-        for x, cell in enumerate(row):
-            adj = get_adjacents(input, x, y)
-            occ = len([s for s in adj if s == '#'])
-            if cell == 'L' and occ == 0:
-                next[y][x] = '#'
-                changes += 1 
-            elif cell == '#' and occ >= 4:
-                next[y][x] = 'L'
-                changes += 1
-    return (next, changes)
+def count(seats, point, infinite = False):
+    occupied = 0
+    for d in directions:
+        if is_occupied(seats, point, d, infinite):
+            occupied += 1
+    return occupied
 
 
-def part_one():
-    next = start
-    count = 0
+def get_changes(seats, threshold, infinite = False):
+    changes = {}
+    for p in points:
+        seat = seats.get(p)
+        occ = count(seats, p, infinite)
+        if seat == 'L' and occ == 0:
+            changes[p] = '#'
+        elif seat == '#' and occ >= threshold:
+            changes[p] = 'L'
+    return changes
+
+
+def run(threshold, infinite = False):
+    seats = hash.copy()
     while True:
-        (next, changes) = transform(next)
-        if changes == 0:
+        changes = get_changes(seats, threshold, infinite)
+        seats.update(changes)
+        if len(changes) == 0:
             break
-    for r in next:
-        for c in r:
-            if c == '#':
-                count += 1
+    count = len([v for v in seats.values() if v == '#'])
     return count
 
 
+def part_one():
+    return run(4)
+
+
 def part_two():
-    return None
+    return run(5, True)
 
 
 print("Part one:", part_one())
